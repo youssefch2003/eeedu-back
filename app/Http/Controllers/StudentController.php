@@ -28,6 +28,7 @@ class StudentController extends Controller
         'prenom' => 'required|string|max:255',
         'email' => 'required|email|unique:students,email',
         'telephone' => 'nullable|string|max:15',
+        'niveau_classe' => 'required|string|max:255',
         'mot_de_passe' => 'required|string|min:6',
         'date_naissance' => 'required|date',
         'genre' => 'nullable|string|max:10',
@@ -55,11 +56,30 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Validate the request data
+        $validated = $request->validate([
+            'nom' => 'nullable|string|max:255',
+            'prenom' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:students,email,' . $id,
+            'telephone' => 'nullable|string|max:15',
+            'date_naissance' => 'nullable|date',
+            'genre' => 'nullable|string|max:10',
+        ]);
+    
+        // Find the student record
         $student = Student::find($id);
-        $student->update($request->all());
-
+    
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+    
+        // Update the student record with validated data
+        $student->update($validated);
+    
+        // return response()->json($student, 200);
         return $student;
     }
+    
 
     /**
      * Remove the specified resource from storage.

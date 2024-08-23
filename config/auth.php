@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'enseignants',
+        'passwords' => 'enseignants',
     ],
 
     /*
@@ -34,13 +34,13 @@ return [
     | Supported: "session"
     |
     */
-
     'guards' => [
-        'web' => [
+        'enseignants' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'enseignants',
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -60,10 +60,12 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'enseignants' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Enseignant::class,
         ],
+    
+
 
         // 'users' => [
         //     'driver' => 'database',
@@ -91,13 +93,13 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'enseignants' => [
+            'provider' => 'enseignants',
             'table' => 'password_reset_tokens',
             'expire' => 60,
-            'throttle' => 60,
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------

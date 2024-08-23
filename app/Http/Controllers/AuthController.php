@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Enseignant;
+use App\Models\Admin; 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -100,14 +101,14 @@ class AuthController extends Controller
     public function login(Request $request) {
         $fields = $request->validate([
             'email' => 'required|string',
-            'password' => 'required|string'
+            'mot_de_passe' => 'required|string'
         ]);
 
         // Check email
         $student = Student::where('email', $fields['email'])->first();
 
         // Check password
-        if(!$student || !Hash::check($fields['password'], $student->mot_de_passe)) {
+        if(!$student || !Hash::check($fields['mot_de_passe'], $student->mot_de_passe)) {
             return response([
                 'message' => 'Bad creds'
             ], 401);
@@ -126,14 +127,14 @@ class AuthController extends Controller
     public function loginEnseignant(Request $request) {
         $fields = $request->validate([
             'email' => 'required|string',
-            'password' => 'required|string'
+            'mot_de_passe' => 'required|string'
         ]);
 
         // Check email
         $enseignant = Enseignant::where('email', $fields['email'])->first();
 
         // Check password
-        if(!$enseignant || !Hash::check($fields['password'], $enseignant->mot_de_passe)) {
+        if(!$enseignant || !Hash::check($fields['mot_de_passe'], $enseignant->mot_de_passe)) {
             return response([
                 'message' => 'Bad creds'
             ], 401);
@@ -148,6 +149,35 @@ class AuthController extends Controller
 
         return response($response, 201);
     }
+    // admin login 
+    public function loginAdmin(Request $request)
+    {
+        // Validate the request data
+        $fields = $request->validate([
+            'email' => 'required|string|email',
+            'mot_de_passe' => 'required|string'
+        ]);
+
+        // Attempt to find the admin by email
+        $admin = Admin::where('email', $fields['email'])->first();
+
+        // Check if admin exists and the password is correct
+        if(!$admin || !Hash::check($fields['mot_de_passe'], $admin->mot_de_passe)) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        // Create a token for the admin
+        $token = $admin->createToken('AdminToken')->plainTextToken;
+
+        // Return a successful response with the admin details and token
+        return response()->json([
+            'admin' => $admin,
+            'token' => $token
+        ], 200);
+    }
+
     public function logout (Request $req){
         auth()->user()->tokens()->delete();
 

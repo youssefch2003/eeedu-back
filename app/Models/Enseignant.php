@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
-class Enseignant extends Model
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class Enseignant extends Model implements CanResetPassword
 {
     use HasFactory,HasApiTokens;
+    use Notifiable;
     protected $fillable = [
         'nom', 'prenom', 'email', 'telephone', 'mot_de_passe', 
         'date_naissance', 'genre', 'niveau_etude', 'photo_diplome', 

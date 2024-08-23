@@ -11,6 +11,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,17 +30,20 @@ Route::post('/register/students', [AuthController::class, 'registerStudent']);
 Route::post('/register/enseignants', [AuthController::class, 'registerEnseignant']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/login-enseignant', [AuthController::class, 'loginEnseignant']);
-Route::get('/students/{id}', [StudentController::class, 'show']);
-Route::get('/students/search/{name}', [StudentController::class, 'search']);
-Route::get('/students', [StudentController::class, 'index']); 
+Route::post('/login-admin', [AuthController::class, 'loginAdmin']);
 
-
-
+// send Reset Link Email
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 
 
 // =================protected routes=============
 Route::group(['middleware' => ['auth:sanctum']], function () {   
+
+    // eleve routes
+    Route::get('/students/search/{name}', [StudentController::class, 'search']);
+    Route::get('/students', [StudentController::class, 'index']); 
+    Route::get('/students/{id}', [StudentController::class, 'show']);
     Route::put('/students/{id}', [StudentController::class, 'update']);
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
